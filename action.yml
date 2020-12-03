@@ -1,0 +1,16 @@
+name: 'PHP Simple Lint'
+description: 'Run Lint using Bash'
+author: 'David Lienhard <david.lienhard@tourasia.ch>'
+inputs:
+  folder:
+    description: 'Folder to Scan'
+    required: false
+    default: './'
+runs:
+  using: "composite"
+  steps:
+    - run: $GITHUB_ACTION_PATH/lint.sh --lint ${{ inputs.folder }}
+      shell: bash
+branding:
+  icon: 'eye'
+  color: 'red'
