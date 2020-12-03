@@ -69,6 +69,8 @@ start_lint() {
     SUCCESS_COUNTER=0
     ERROR_COUNTER=0
 
+    START_TIME=$(date +%s)
+
     for file in $(find ${PATH_TO_SCAN} -type f -name "*.php"${IGNOREPATHS}); do
         RESULTS=$(php -l ${file})
 
@@ -82,7 +84,9 @@ start_lint() {
         fi
     done
 
-    printf "\ncheck has finished\n"
+    END_TIME=$(date +%s)
+
+    printf "\ncheck has finished in $((END_TIME-START_TIME))s\n"
     printf " - ${YELLOW}${FILE_COUNTER}${NC} files checked\n"
     printf " - ${GREEN}${SUCCESS_COUNTER}${NC} files without error\n"
     printf " - ${RED}${ERROR_COUNTER}${NC} files with error\n"
