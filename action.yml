@@ -6,10 +6,14 @@ inputs:
     description: 'Folder to Scan'
     required: false
     default: './'
+  ignore:
+    description: 'List of Folders/Files to exclude'
+    required: false
+    default: './vendor/\*'
 runs:
   using: "composite"
   steps:
-    - run: $GITHUB_ACTION_PATH/lint.sh --lint ${{ inputs.folder }}
+    - run: $GITHUB_ACTION_PATH/lint.sh --lint ${{ inputs.folder }} --ignore ${{ inputs.ignore }}
       shell: bash
 branding:
   icon: 'eye'

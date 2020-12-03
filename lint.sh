@@ -9,6 +9,9 @@ set -o errtrace
 # set -u : exit the script if you try to use an uninitialised variable
 set -o nounset
 
+# Disable filename expansion (globbing).
+set -f
+
 ST_OK=0
 ST_ERR=1
 ST_HLP=2
@@ -22,7 +25,7 @@ NC="\033[0m"
 PHP_MAJOR="$(php -v | head -n 1 | awk '{print $2}' | cut -d '.' -f 1,2)"
 PHP_FULL_VERSION=$(php -r 'echo phpversion();')
 
-printf "${GREEN}Recursive PHP syntax check${NC} (lint)\n"
+printf "${GREEN}PHP Simple Lint${NC}\n"
 
 print_help() {
     printf "\n${YELLOW}Usage:${NC} $0 [command]\n"
@@ -34,11 +37,18 @@ print_help() {
 start_lint() {
     if [ $# -lt 2 ]; then
         printf "\n${YELLOW}Using syntax checker:${NC}\n"
-        printf "\n        $0 --lint ${PURPLE}\$(pwd)/relative/path/to/the/files${NC}"
+        printf "\n        $0 --lint ${PURPLE}./relative/path/to/the/files${NC}"
         printf "\n        $0 --lint ${PURPLE}/absolute/path/to/the/files${NC}"
         printf "\n\n"
 
         exit ${ST_HLP}
+    fi
+
+    IGNOREPATHS=""
+    if [[ $# -ge 4 && $3 == --ignore ]]; then
+        for path in $(echo "${4}" | sed "s/;/ /g"); do
+            IGNOREPATHS="${IGNOREPATHS} ! -path ${path}"
+        done
     fi
 
     declare PATH_TO_SCAN=$2
@@ -59,7 +69,7 @@ start_lint() {
     SUCCESS_COUNTER=0
     ERROR_COUNTER=0
 
-    for file in $(find ${PATH_TO_SCAN} -type f -name "*.php"); do
+    for file in $(find ${PATH_TO_SCAN} -type f -name "*.php"${IGNOREPATHS}); do
         RESULTS=$(php -l ${file})
 
         FILE_COUNTER=$((FILE_COUNTER+1))

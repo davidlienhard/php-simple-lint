@@ -9,6 +9,14 @@ This requires PHP already to be set up in the workflow.
 
 The folder to control. Defaults to `"./"`.
 
+### `ignore`
+
+Semicolon separated list of folders or files to ignore. Special caracters like asterisks or semicolons must be escaped.
+
+`ignore: './vendor/\*'` or `ignore: './vendor/\*\;./tests/\*'`
+
+Defaults to `'./vendor/\*'`
+
 ## Example usage
 
 ```yaml
@@ -16,4 +24,5 @@ The folder to control. Defaults to `"./"`.
   uses: davidlienhard/php-simple-lint@1
   with:
     folder: './'
+    ignore: './vendor/\*'
 ```
